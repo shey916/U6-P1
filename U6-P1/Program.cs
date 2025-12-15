@@ -6,88 +6,88 @@ class Program
 {
     static void Main(string[] args)
     {
-        // 1. CONFIGURACIÓN DEL ESCENARIO
-        // Generamos una cantidad masiva de datos para que la diferencia sea notable.
-        int cantidadDatos = 10000000; // 10 Millones de datos
-        Console.WriteLine($"--- GENERANDO {cantidadDatos:N0} DATOS ALEATORIOS ---");
+        // 1. SCENARIO CONFIGURATION
+        // We generate a massive amount of data so the difference is noticeable.
+        int dataCount = 10000000; // 10 Million records
+        Console.WriteLine($"--- GENERATING {dataCount:N0} RANDOM DATA POINTS ---");
 
-        int[] datos = new int[cantidadDatos];
+        int[] data = new int[dataCount];
         Random rnd = new Random();
 
-        // Llenamos el arreglo
-        for (int i = 0; i < cantidadDatos; i++)
+        // Fill the array
+        for (int i = 0; i < dataCount; i++)
         {
-            datos[i] = rnd.Next(0, cantidadDatos * 2); // Números entre 0 y 20 millones
+            data[i] = rnd.Next(0, dataCount * 2); // Numbers between 0 and 20 million
         }
 
-        // Elegimos un número que SABEMOS que existe (el último para el peor caso lineal)
-        // Ojo: En un escenario real, el número podría estar en cualquier parte.
-        int objetivo = datos[cantidadDatos - 1];
-        Console.WriteLine($"Objetivo a buscar: {objetivo}");
+        // We choose a number we KNOW exists (the last one for the worst linear case)
+        // Note: In a real scenario, the number could be anywhere.
+        int target = data[dataCount - 1];
+        Console.WriteLine($"Target to find: {target}");
         Console.WriteLine("--------------------------------------------------\n");
 
-        // 2. PRUEBA DE BÚSQUEDA LINEAL
-        Console.WriteLine("INICIANDO BÚSQUEDA LINEAL...");
+        // 2. LINEAR SEARCH TEST
+        Console.WriteLine("STARTING LINEAR SEARCH...");
         Stopwatch sw = Stopwatch.StartNew();
 
-        int indiceLineal = BusquedaLineal(datos, objetivo);
+        int linearIndex = LinearSearch(data, target);
 
         sw.Stop();
-        Console.WriteLine($"[Lineal] Encontrado en índice: {indiceLineal}");
-        Console.WriteLine($"[Lineal] Tiempo transcurrido: {sw.Elapsed.TotalMilliseconds} ms");
-        Console.WriteLine("Justificación: Aceptable para pocos datos, pero lento aquí.");
+        Console.WriteLine($"[Linear] Found at index: {linearIndex}");
+        Console.WriteLine($"[Linear] Time elapsed: {sw.Elapsed.TotalMilliseconds} ms");
+        Console.WriteLine("Justification: Acceptable for small data, but slow here.");
         Console.WriteLine("\n--------------------------------------------------\n");
 
-        // 3. PRUEBA DE BÚSQUEDA BINARIA
-        // Para usar búsqueda binaria, PRIMERO debemos ordenar.
-        Console.WriteLine("PREPARANDO BÚSQUEDA BINARIA (ORDENANDO DATOS)...");
+        // 3. BINARY SEARCH TEST
+        // To use binary search, we MUST sort FIRST.
+        Console.WriteLine("PREPARING BINARY SEARCH (SORTING DATA)...");
         sw.Restart();
 
-        Array.Sort(datos); // El costo de ordenar
+        Array.Sort(data); // The cost of sorting
 
         sw.Stop();
-        Console.WriteLine($"[Ordenamiento] Tiempo de preparación: {sw.Elapsed.TotalMilliseconds} ms");
+        Console.WriteLine($"[Sorting] Preparation time: {sw.Elapsed.TotalMilliseconds} ms");
 
-        Console.WriteLine("INICIANDO BÚSQUEDA BINARIA...");
+        Console.WriteLine("STARTING BINARY SEARCH...");
         sw.Restart();
 
-        int indiceBinario = BusquedaBinaria(datos, objetivo);
+        int binaryIndex = BinarySearch(data, target);
 
         sw.Stop();
-        Console.WriteLine($"[Binaria] Encontrado en índice (post-orden): {indiceBinario}");
-        Console.WriteLine($"[Binaria] Tiempo transcurrido: {sw.Elapsed.TotalMilliseconds} ms"); // Esto será casi 0
-        Console.WriteLine("Justificación: Una vez ordenado, la búsqueda es instantánea.");
+        Console.WriteLine($"[Binary] Found at index (post-sort): {binaryIndex}");
+        Console.WriteLine($"[Binary] Time elapsed: {sw.Elapsed.TotalMilliseconds} ms"); // This will be almost 0
+        Console.WriteLine("Justification: Once sorted, search is instant.");
 
         Console.ReadKey();
     }
 
-    // Algoritmo de Búsqueda Lineal O(n)
-    static int BusquedaLineal(int[] arreglo, int valor)
+    // Linear Search Algorithm O(n)
+    static int LinearSearch(int[] array, int value)
     {
-        for (int i = 0; i < arreglo.Length; i++)
+        for (int i = 0; i < array.Length; i++)
         {
-            if (arreglo[i] == valor) return i;
+            if (array[i] == value) return i;
         }
         return -1;
     }
 
-    // Algoritmo de Búsqueda Binaria O(log n)
-    static int BusquedaBinaria(int[] arreglo, int valor)
+    // Binary Search Algorithm O(log n)
+    static int BinarySearch(int[] array, int value)
     {
-        int izquierdo = 0;
-        int derecho = arreglo.Length - 1;
+        int left = 0;
+        int right = array.Length - 1;
 
-        while (izquierdo <= derecho)
+        while (left <= right)
         {
-            int medio = izquierdo + (derecho - izquierdo) / 2;
+            int mid = left + (right - left) / 2;
 
-            if (arreglo[medio] == valor)
-                return medio;
+            if (array[mid] == value)
+                return mid;
 
-            if (arreglo[medio] < valor)
-                izquierdo = medio + 1;
+            if (array[mid] < value)
+                left = mid + 1;
             else
-                derecho = medio - 1;
+                right = mid - 1;
         }
         return -1;
     }
